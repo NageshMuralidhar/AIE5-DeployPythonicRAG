@@ -168,7 +168,7 @@ Simply put, this downloads the file as a temp file, we load it in with `TextFile
 
 Why do we want to support streaming? What about streaming is important, or useful?
 
-#### ✅ Answer:
+### ✅ ANSWER:
 Let me explain why streaming is important and useful in this context, referencing the relevant code:
 
 ```
@@ -255,7 +255,7 @@ Now, we'll save that into our user session!
 
 Why are we using User Session here? What about Python makes us need to use this? Why not just store everything in a global variable?
 
-#### ✅ Answer:
+### ✅ ANSWER:
 
 -We are using User Session here because it allows us to store and retrieve data specific to each user session. This is useful in a web application where multiple users can interact with the application simultaneously.
 
