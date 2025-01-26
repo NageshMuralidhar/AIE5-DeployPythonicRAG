@@ -11,4 +11,5 @@ dependencies = [
     "pydantic==2.10.1",
     "pypdf2>=3.0.1",
     "websockets>=14.2",
+    "pip>=24.0",
 ]

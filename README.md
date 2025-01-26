@@ -168,6 +168,51 @@ Simply put, this downloads the file as a temp file, we load it in with `TextFile
 
 Why do we want to support streaming? What about streaming is important, or useful?
 
+#### ✅ Answer:
+Let me explain why streaming is important and useful in this context, referencing the relevant code:
+
+```
+@cl.on_chat_start
+async def on_chat_start():
+    files = None
+
+    # Wait for the user to upload a file
+    while files == None:
+        files = await cl.AskFileMessage(
+```
+
+-The RAG pipeline is implemented with streaming support through the astream method. Here's why streaming is important:
+-Real-time Response Generation
+-Instead of waiting for the entire response to be generated before showing anything to the user, streaming allows the application to display the response as it's being generated
+-This creates a more engaging user experience as users can see the response being built word by word, similar to how ChatGPT works
+-Memory Efficiency
+-Rather than holding the entire response in memory before sending it, streaming sends small chunks of data as they become available
+-This is especially important when dealing with longer responses or when multiple users are using the system simultaneously
+-Reduced Latency
+-Users see the beginning of the response much faster since they don't have to wait for the entire response to be generated
+-This gives the impression of a more responsive system
+-Better Error Handling
+-If there's an error during response generation, it can be caught and handled earlier in the process
+-Users aren't left waiting for a complete response that might fail at the end
+-The implementation shows this in action:
+
+```
+    msg = cl.Message(content="")
+    result = await chain.arun_pipeline(message.content)
+
+    async for stream_resp in result["response"]:
+        await msg.stream_token(stream_resp)
+
+    await msg.send()
+```
+
+Here we can see how the application streams tokens to the frontend using Chainlit's streaming capabilities. Each chunk of the response is immediately sent to the user interface as it's generated, rather than waiting for the complete response.
+This is particularly valuable in RAG applications because:
+- Document retrieval and response generation can take time
+- Responses are often longer since they incorporate context from retrieved documents
+- Users get immediate feedback that the system is working on their query
+
+
 ### On Chat Start:
 
 The next scope is where "the magic happens". On Chat Start is when a user begins a chat session. This will happen whenever a user opens a new chat window, or refreshes an existing chat window.
@@ -209,6 +254,15 @@ Now, we'll save that into our user session!
 #### ❓ QUESTION #2:
 
 Why are we using User Session here? What about Python makes us need to use this? Why not just store everything in a global variable?
+
+#### ✅ Answer:
+
+-We are using User Session here because it allows us to store and retrieve data specific to each user session. This is useful in a web application where multiple users can interact with the application simultaneously.
+
+-In Python, variables are typically scoped to the module or function where they are defined. If we stored data in global variables, it would be shared across all users, which would lead to incorrect results and potential errors.
+
+-By using User Session, we can ensure that each user's data is isolated and only accessible to them. This is crucial for maintaining the integrity and functionality of the application.
+
 
 ### On Message
 
